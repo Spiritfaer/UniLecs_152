@@ -3,25 +3,27 @@
 #include <stdint.h>
 #include <mem.h>
 
+int8_t	is_sympols(char ch, char const *symbols)
+{
+	while (*symbols)
+		if (ch == *symbols++)
+			return (1);
+	return (0);
+}
+
 void	character_replacement(char *inputStr, char const *delimiters, char symbol, int32_t num, uint32_t size)
 {
 	uint32_t i = 0;
-	uint32_t j = 0;
 
 	if (size > num)
 		inputStr[num - 1] = symbol;
 	while (inputStr[i])
 	{
-		j = 0;
-		while (delimiters[j])
+		if (is_sympols(inputStr[i], delimiters) && (i + num) < size)
 		{
-			if ((inputStr[i] == delimiters[j]) && (i + num) < size)
-			{
-				if (inputStr[i + num] == symbol)
-					character_replacement(inputStr + i + num, delimiters, symbol, num, strlen(inputStr + i + num));
-				inputStr[i + num] = symbol;
-			}
-			j++;
+			if (is_sympols(inputStr[i + num], delimiters))
+				character_replacement(inputStr + i + num, delimiters, symbol, num, strlen(inputStr + i + num));
+			inputStr[i + num] = symbol;
 		}
 		i++;
 	}
@@ -33,7 +35,7 @@ int		main(void)
 	time_t start_time = clock();
 
 	char inputStr[] = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.";
-	char *delimiters = {" m"};
+	char *delimiters = {" c"};
 
 	printf("%s\n", inputStr);
 	character_replacement(inputStr, delimiters, '%', 2, strlen(inputStr));
